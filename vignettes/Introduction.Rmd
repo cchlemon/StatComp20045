@@ -19,6 +19,7 @@ this function is aimed to solve the question above.
 set $X$ denoting the number of a dice and $g_X(s)$ denoting Probability generating functions.
 
 According to the probability theory
+
 $$
 g_X(s)=Es^X=\Sigma s^X p(X)=\frac{1}{6}(x+...+x^6)
 $$
@@ -32,7 +33,21 @@ g_{\sum X}(s)&=(g_X(s))^n\\
 &=\frac{s^n}{6^n} \left(\sum_{i=0}^{n} C_n^i (-1)^i s^{6i}\right)\left(\sum_{j=0}^{+\infty} C_{n-1+j}^{n-1}s^j\right)
 \end{align}
 $$
-so the coeff of $s^k$ is the probability. there are codes in R document.
+so the coeff of $s^k$ is the probability.
+```{r}
+dice<-function(n,k){
+  x<-matrix(numeric((k+1)*(k+1)),ncol = k+1,nrow = k+1,byrow = TRUE)
+  j<- 0
+  while(j<=k){
+    for(i in 0:n){
+      if(6*i+j+n==k){x[i+1,j+1]<-(-1)^i*choose(n,i)*choose(n-1+j,n-1)/(6^n)}
+    }
+    j<-j+1
+  }
+  y<-sum(apply(x,1,sum))
+  return(y)
+}
+```
 
 
 ## second function
@@ -44,10 +59,23 @@ there is black box with m1 white balls and m2 black balls.when people got a whit
 seting A={saying yes};A1={saying yes about a easy and public question};A2={saying yes about the sensitive question};B1={answer a easy and public question};B2={answer the sensitive question}
 
 so
+
 $$
 p(A)=p(A1)+p(A2)=p(B1)p(A|B1)+p(B2)p(A|B2)
 $$
+
 so
+
 $$
 p(A|B2)=\frac{p(A)-p(B1)p(A|B1)}{p(B2)}
 $$
+
+```{r}
+sq<-function(N,n,p,m1,m2){
+  y1<- n/N
+  y2<- m1*p/(m1+m2)
+  y3<- m2/(m1+m2)
+  y<- (y1-y2)/y3
+  return(y)
+}
+```
